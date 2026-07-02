@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de informes</title>
+  <style>
+    :root {
+      --verde: #2e7d32;
+      --gris-borde: #d9dee3;
+      --texto: #2b2f33;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f2f4f7;
+      color: var(--texto);
+    }
+    .tarjeta {
+      background: #fff;
+      width: 100%;
+      max-width: 440px;
+      margin: 24px;
+      padding: 36px 32px;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin: 0 0 4px;
+      text-align: center;
+    }
+    .sub {
+      text-align: center;
+      color: #6b7280;
+      margin: 0 0 28px;
+      font-size: 0.95rem;
+    }
+    label.subir {
+      display: block;
+      border: 2px dashed var(--gris-borde);
+      border-radius: 10px;
+      padding: 22px;
+      text-align: center;
+      cursor: pointer;
+      color: #6b7280;
+      transition: border-color .15s, background .15s;
+    }
+    label.subir:hover { border-color: var(--verde); background: #f6faf6; }
+    label.subir strong { color: var(--verde); }
+    input[type="file"] { display: none; }
+    #nombre-archivo {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: var(--texto);
+      text-align: center;
+      word-break: break-all;
+    }
+    button, .boton {
+      display: block;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn-generar {
+      background: var(--verde);
+      color: #fff;
+      margin-top: 18px;
+    }
+    .btn-generar:hover { background: #276a2b; }
+    .btn-descargar {
+      background: #eef4ff;
+      color: #1d4ed8;
+      border: 1px solid #c7d7fb;
+      margin-top: 14px;
+    }
+    .btn-descargar:hover { background: #e2ecff; }
+    .mensaje {
+      margin-top: 18px;
+      padding: 11px 14px;
+      border-radius: 9px;
+      font-size: 0.92rem;
+      text-align: center;
+    }
+    .mensaje.ok { background: #eaf6ec; color: #22682a; }
+    .mensaje.error { background: #fdeaea; color: #a52222; }
+  </style>
+</head>
+<body>
+  <div class="tarjeta">
+    <h1>Generador de informes</h1>
+    <p class="sub">Sube un Excel y genera el informe en Word.</p>
+
+    <form action="{{ url_for('generar') }}" method="post" enctype="multipart/form-data">
+      <label class="subir" for="excel">
+        <strong>Elegir archivo Excel</strong><br>
+        <span style="font-size:.85rem">(.xlsx o .xls)</span>
+        <input type="file" id="excel" name="excel" accept=".xlsx,.xls" required>
+      </label>
+      <div id="nombre-archivo"></div>
+
+      <button type="submit" class="btn-generar">Generar informe</button>
+    </form>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% for categoria, texto in mensajes %}
+        <div class="mensaje {{ categoria }}">{{ texto }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% if informe_listo %}
+      <a class="boton btn-descargar" href="{{ url_for('descargar') }}">Descargar Word</a>
+    {% endif %}
+  </div>
+
+  <script>
+    const input = document.getElementById("excel");
+    const destino = document.getElementById("nombre-archivo");
+    input.addEventListener("change", () => {
+      destino.textContent = input.files.length ? input.files[0].name : "";
+    });
+  </script>
+</body>
+</html>
