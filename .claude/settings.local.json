@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import pandas, openpyxl, matplotlib, docx; print\\('deps OK'\\)\")",
+      "Bash(python3 *)"
+    ]
+  }
+}
