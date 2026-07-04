@@ -14,6 +14,7 @@ Dependencias:
     pip install flask pandas openpyxl matplotlib python-docx
 """
 
+import os
 import tempfile
 import uuid
 from pathlib import Path
@@ -103,4 +104,4 @@ def descargar():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
