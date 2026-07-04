@@ -18,9 +18,15 @@ Dependencias:
     pip install pandas openpyxl matplotlib python-docx
 """
 
+import os
 import sys
 import unicodedata
 from pathlib import Path
+
+# En Railway el HOME del contenedor puede ser de solo lectura: dirigimos la
+# caché de fuentes de matplotlib a /tmp (escribible) antes de importarlo, para
+# que el arranque del worker no se bloquee ni falle silenciosamente.
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 import pandas as pd
 import matplotlib
